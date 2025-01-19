@@ -17,6 +17,10 @@ int loongson_vblank = 1;
 MODULE_PARM_DESC(vblank, "Disable/Enable hw vblank support");
 module_param_named(vblank, loongson_vblank, int, 0400);
 
+int loongson_ls7a2000_support = 0;
+MODULE_PARM_DESC(ls7a2000_support, "Disable/Enable 7A2000 support (1 = enabled, 0 = disabled (default))");
+module_param_named(ls7a2000_support, loongson_ls7a2000_support, int, 0400);
+
 static int __init loongson_module_init(void)
 {
 	if (!loongson_modeset || video_firmware_drivers_only())
