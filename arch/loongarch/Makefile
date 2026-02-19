@@ -124,6 +124,11 @@ KBUILD_LDFLAGS			+= $(call ld-option,-mllvm --loongarch-annotate-tablejump)
 endif
 endif
 
+ifdef CONFIG_LOONGARCH_NATIVE_CPU
+KBUILD_CFLAGS += -march=native
+KBUILD_RUSTFLAGS += -Ctarget-cpu=native
+endif
+
 KBUILD_RUSTFLAGS		+= --target=loongarch64-unknown-none-softfloat -Ccode-model=small
 KBUILD_RUSTFLAGS_KERNEL		+= -Zdirect-access-external-data=yes
 KBUILD_RUSTFLAGS_MODULE		+= -Zdirect-access-external-data=no
