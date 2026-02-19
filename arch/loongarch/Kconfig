@@ -301,6 +301,17 @@ config AS_HAS_LBT_EXTENSION
 config AS_HAS_LVZ_EXTENSION
 	def_bool $(as-instr,hvcl 0)
 
+# From arch/x86/Kconfig.cpu
+config CC_HAS_MARCH_NATIVE
+	# This flag might not be available in cross-compilers:
+	def_bool $(cc-option, -march=native)
+	# LLVM 18 has an easily triggered internal compiler error in core
+	# networking code with '-march=native' on certain systems:
+	# https://github.com/llvm/llvm-project/issues/72026
+	# LLVM 19 introduces an optimization that resolves some high stack
+	# usage warnings that only appear wth '-march=native'.
+	depends on CC_IS_GCC || CLANG_VERSION >= 190100
+
 config CC_HAS_ANNOTATE_TABLEJUMP
 	def_bool $(cc-option,-mannotate-tablejump)
 
@@ -622,6 +633,19 @@ config CPU_HAS_LBT
 config CPU_HAS_PREFETCH
 	bool
 	default y
+
+config LOONGARCH_NATIVE_CPU
+	bool "Build and optimize for local/native CPU"
+	depends on CC_HAS_MARCH_NATIVE
+	help
+	  Optimize for the current CPU used to compile the kernel.
+	  Use this option if you intend to build the kernel for your
+	  local machine.
+
+	  Note that such a kernel might not work optimally on a
+	  different LoongArch machine.
+
+	  If unsure, say N.
 
 config ARCH_SUPPORTS_KEXEC
 	def_bool y
