@@ -393,3 +393,6 @@ COND_SYSCALL(rseq);
 
 COND_SYSCALL(uretprobe);
 COND_SYSCALL(uprobe);
+
+/* csmantle */
+COND_SYSCALL(csm_hostname);

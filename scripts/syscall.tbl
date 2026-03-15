@@ -411,3 +411,6 @@
 468	common	file_getattr			sys_file_getattr
 469	common	file_setattr			sys_file_setattr
 470	common	listns				sys_listns
+
+# csmantle
+1024	common	csm_hostname			sys_csm_hostname

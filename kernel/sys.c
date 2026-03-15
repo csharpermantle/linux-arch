@@ -3034,3 +3034,44 @@ COMPAT_SYSCALL_DEFINE1(sysinfo, struct compat_sysinfo __user *, info)
 	return 0;
 }
 #endif /* CONFIG_COMPAT */
+
+SYSCALL_DEFINE3(csm_hostname, int, is_set, char __user *, name, int, len)
+{
+	int errno;
+	char tmp[__NEW_UTS_LEN + 1];
+
+	if (is_set) {
+		if (!ns_capable(current->nsproxy->uts_ns->user_ns,
+				CAP_SYS_ADMIN))
+			return -EPERM;
+		if (len < 0 || len > __NEW_UTS_LEN)
+			return -EINVAL;
+		errno = -EFAULT;
+		if (!copy_from_user(tmp, name, len)) {
+			struct new_utsname *u;
+			down_write(&uts_sem);
+			u = utsname();
+			memcpy(u->nodename, tmp, len);
+			memset(u->nodename + len, 0, sizeof(u->nodename) - len);
+			errno = 0;
+			uts_proc_notify(UTS_PROC_HOSTNAME);
+			up_write(&uts_sem);
+		}
+	} else {
+		int i;
+		struct new_utsname *u;
+		if (len < 0)
+			return -EINVAL;
+		down_read(&uts_sem);
+		u = utsname();
+		i = 1 + strlen(u->nodename);
+		if (i > len)
+			i = len;
+		memcpy(tmp, u->nodename, i);
+		up_read(&uts_sem);
+		if (copy_to_user(name, tmp, i))
+			return -EFAULT;
+		errno = 0;
+	}
+	return errno;
+}
