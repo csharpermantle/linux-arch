@@ -8,6 +8,7 @@
 #include <linux/capability.h>
 #include <linux/entry-common.h>
 #include <linux/errno.h>
+#include <linux/nospec.h>
 #include <linux/linkage.h>
 #include <linux/nospec.h>
 #include <linux/objtool.h>
