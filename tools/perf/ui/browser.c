@@ -514,9 +514,11 @@ unsigned int ui_browser__list_head_refresh(struct ui_browser *browser)
 	int row = 0;
 
 	if (browser->top == NULL || browser->top == browser->entries)
-                browser->top = ui_browser__list_head_filter_entries(browser, head->next);
+		browser->top = ui_browser__list_head_filter_entries(browser, head->next);
 
 	pos = browser->top;
+	if (pos == NULL)
+		return 0;
 
 	list_for_each_from(pos, head) {
 		if (!browser->filter || !browser->filter(browser, pos)) {
